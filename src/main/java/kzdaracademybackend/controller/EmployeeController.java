@@ -1,54 +1,53 @@
 package kzdaracademybackend.controller;
 
-import kzdaracademybackend.model.EmployeeModel;
-import kzdaracademybackend.service.EmployeeService;
+import kzdaracademybackend.model.EmployeeRequest;
+import kzdaracademybackend.model.EmployeeResponse;
+import kzdaracademybackend.service.employee.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
-    @Autowired
-    Environment env;
-    @Autowired
-    private EmployeeService employeeService;
 
 
-    @GetMapping("/check")
-    public String check(){
-        return "employee-core-api is working at " + env.getProperty("local.server.port");
-    }
+    @Autowired
+    EmployeeService employeeService;
+
+
     @PostMapping
-    public ResponseEntity<String> createEmployee(@Valid @RequestBody EmployeeModel employeeModel){
-        employeeService.createEmployee(employeeModel);
-        return new ResponseEntity<String>("Successfully created", HttpStatus.OK);
+    public EmployeeResponse createEmployee(@RequestBody EmployeeRequest employeeRequest){
+        return employeeService.createEmployee(employeeRequest);
+    }
+    @PutMapping
+    public EmployeeResponse updateEmployee(@RequestParam String employeeId, @RequestBody EmployeeRequest employeeRequest){
+        employeeRequest.setEmployeeId(employeeId);
+        return employeeService.updateEmployee(employeeRequest);
+    }
+
+    @GetMapping
+    public EmployeeResponse getEmployeeById(@RequestParam String employeeId){
+        return employeeService.getEmployeeById(employeeId);
     }
 
     @GetMapping("/all")
-    public List<EmployeeModel> getAllEmployees(){
+    public List<EmployeeResponse> getAllEmployees(){
         return employeeService.getAllEmployees();
     }
 
-    @GetMapping("/{employeeId}")
-    public EmployeeModel getEmployeeById(@PathVariable String employeeId){
-        return employeeService.getEmployeeById(employeeId);
-    }
-    @PutMapping("/{employeeId}")
-    public ResponseEntity<String> updateEmployeeById(@PathVariable String employeeId,
-                                                     @Valid @RequestBody EmployeeModel employeeModel ){
-        employeeService.updateEmployeeById(employeeId, employeeModel);
-        return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
+    @DeleteMapping
+    public void deleteEmployeeById(@RequestParam String employeeId){
+        employeeService.deleteEmployeeById(employeeId);
     }
 
-    @DeleteMapping("/{employeeId}")
-    public ResponseEntity<String> deleteEmployeeById(@PathVariable String employeeId){
-        employeeService.deleteEmployeeById(employeeId);
-        return new ResponseEntity<>("Successfully deleted",HttpStatus.OK);
+    @GetMapping("/surname")
+    public List<EmployeeResponse> getEmployeesBySurname(@RequestParam String surname){
+        return employeeService.getEmployeesBySurname(surname);
+    }
+    @GetMapping("/name")
+    public EmployeeResponse getEmployeeByName(@RequestParam String name){
+        return employeeService.getEmployeeByName(name);
     }
 }

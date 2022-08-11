@@ -1,10 +1,10 @@
-package kzdaracademybackend.service;
+package kzdaracademybackend.service.deprecated;
 
 import kzdaracademybackend.model.EmployeeModel;
 
 import java.util.List;
 
-public interface EmployeeService {
+public interface EmployeeServiceOld {
     void createEmployee(EmployeeModel employeeModel);
     List<EmployeeModel> getAllEmployees();
     EmployeeModel getEmployeeById(String employeeId);
